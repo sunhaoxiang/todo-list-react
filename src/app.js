@@ -8,7 +8,8 @@ export default class App extends React.Component {
     super(props)
     this.state = {
       todosData: [],
-      inputVal: ''
+      inputVal: '',
+      view: 'all'
     }
 
     this.inputChange = this.inputChange.bind(this)
@@ -17,6 +18,11 @@ export default class App extends React.Component {
     this.onClearCompleted.bind(this)
     this.toggleAll = this.toggleAll.bind(this)
     this.onToggle = this.onToggle.bind(this)
+    this.changeView = this.changeView.bind(this)
+  }
+
+  changeView (view) {
+    this.setState({view})
   }
 
   inputChange (ev) {
@@ -87,16 +93,26 @@ export default class App extends React.Component {
   }
 
   render () {
-    let {inputChange, handleKeyDownPost, onDestroy, onClearCompleted, toggleAll, onToggle} = this
-    let {todosData, inputVal} = this.state
+    let {inputChange, handleKeyDownPost, onDestroy, onClearCompleted, toggleAll, onToggle, changeView} = this
+    let {todosData, inputVal, view} = this.state
     let items = null
     let footer = null
     let itemsBox = null
     let leftCount = todosData.length
 
-    items = todosData.map((e, i) => {
+    items = todosData.filter(e => {
       if (e.hasCompleted) leftCount--
+      switch (view) {
+        case 'active':
+          return !e.hasCompleted
+        case 'completed':
+          return e.hasCompleted
+        default:
+          return true
+      }
+    })
 
+    items = items.map((e, i) => {
       return (
         <Item {...{onDestroy, onToggle, todo:e}} key={i}/>
       )
@@ -120,7 +136,9 @@ export default class App extends React.Component {
           {...{
             leftCount,
             showClearButton: leftCount < todosData.length,
-            onClearCompleted
+            onClearCompleted,
+            changeView,
+            view
           }}
         />
       )
