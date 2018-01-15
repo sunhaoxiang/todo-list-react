@@ -6,6 +6,7 @@ import './common/style/index.css'
 export default class App extends React.Component {
   constructor (props) {
     super(props)
+
     this.state = {
       todosData: [],
       inputVal: '',
@@ -19,6 +20,18 @@ export default class App extends React.Component {
     this.toggleAll = this.toggleAll.bind(this)
     this.onToggle = this.onToggle.bind(this)
     this.changeView = this.changeView.bind(this)
+    this.itemEditDone = this.itemEditDone.bind(this)
+  }
+
+  itemEditDone (todo, value) {
+    let {todosData} = this.state
+
+    todosData = todosData.map(e => {
+      if(todo.id === e.id) {
+        e.value = value
+      }
+      return e
+    })
   }
 
   changeView (view) {
@@ -71,7 +84,6 @@ export default class App extends React.Component {
     this.setState({
       todosData
     })
-    console.log(todosData)
   }
 
   onDestroy (todo) {
@@ -93,7 +105,16 @@ export default class App extends React.Component {
   }
 
   render () {
-    let {inputChange, handleKeyDownPost, onDestroy, onClearCompleted, toggleAll, onToggle, changeView} = this
+    let {
+      inputChange, 
+      handleKeyDownPost, 
+      onDestroy, 
+      onClearCompleted, 
+      toggleAll, 
+      onToggle, 
+      changeView,
+      itemEditDone
+    } = this
     let {todosData, inputVal, view} = this.state
     let items = null
     let footer = null
@@ -114,7 +135,15 @@ export default class App extends React.Component {
 
     items = items.map((e, i) => {
       return (
-        <Item {...{onDestroy, onToggle, todo:e}} key={i}/>
+        <Item 
+          {...{
+            onDestroy, 
+            onToggle, 
+            itemEditDone,
+            todo:e
+          }} 
+          key={i}
+        />
       )
     })
 
