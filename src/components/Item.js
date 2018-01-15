@@ -33,7 +33,7 @@ export default class Item extends React.Component {
     this.setState({
       inEdit: true,
       val: value
-    })
+    }, () => this.refs.editInput.focus())
   }
 
   itemEditDone () {
@@ -60,7 +60,7 @@ export default class Item extends React.Component {
     let {todo, onDestroy, onToggle} = this.props
     let {inEdit, val} = this.state
 
-    let itemClassName = ''
+    let itemClassName = todo.hasCompleted ? 'completed' : ''
 
     if (inEdit) itemClassName += 'editing'
 
@@ -81,7 +81,9 @@ export default class Item extends React.Component {
           value={val}
           onBlur={onBlur}
           onKeyDown={onEnter}
-          onChange={inputChange}/>
+          onChange={inputChange}
+          ref="editInput"
+        />
       </li>
     )
   }
