@@ -7,17 +7,26 @@ export default class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      todosData: []
+      todosData: [],
+      inputVal: ''
     }
 
+    this.inputChange = this.inputChange.bind(this)
     this.handleKeyDownPost = this.handleKeyDownPost.bind(this)
     this.onDestroy = this.onDestroy.bind(this)
     this.onClearCompleted.bind(this)
   }
 
+  inputChange (ev) {
+    this.setState({
+      inputVal: ev.target.value
+    })
+  }
+
   handleKeyDownPost (ev) {
     if (ev.keyCode !== 13) return
-    let value = ev.target.value.trim();
+    let {inputVal} = this.state
+    let value = inputVal.trim()
     if (value === '') return
     let todo = {}
     todo.id = new Date().getTime()
@@ -25,8 +34,10 @@ export default class App extends React.Component {
     todo.hasCompleted = false
     let {todosData} = this.state
     todosData.push(todo)
-    this.setState({todosData})
-    ev.target.value = ''
+    this.setState({
+      todosData,
+      inputVal: ''
+    })
   }
 
   onDestroy (todo) {
@@ -48,8 +59,8 @@ export default class App extends React.Component {
   }
 
   render () {
-    let {handleKeyDownPost, onDestroy, onClearCompleted} = this
-    let {todosData} = this.state
+    let {inputChange, handleKeyDownPost, onDestroy, onClearCompleted} = this
+    let {todosData, inputVal} = this.state
     let items = null
     items = todosData.map((e, i) => {
       return (
@@ -61,7 +72,11 @@ export default class App extends React.Component {
       <div>
         <header className="header">
           <h1>todos</h1>
-          <input type="text" className="new-todo" onKeyDown={handleKeyDownPost}/>
+          <input type="text"
+            className="new-todo"
+            value={inputVal}
+            onChange={inputChange}
+            onKeyDown={handleKeyDownPost}/>
         </header>
         <section className="main">
           <input type="checkbox" className="toggle-all"/>
