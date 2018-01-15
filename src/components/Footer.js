@@ -6,7 +6,7 @@ let propTypes = {
   view: PT.oneOf(['all', 'active', 'completed'])
 }
 
-export default class Item extends React.Component {
+export default class Footer extends React.Component {
   constructor (props) {
     super(props)
   }
